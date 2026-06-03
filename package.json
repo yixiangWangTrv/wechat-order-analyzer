@@ -1,21 +1,17 @@
 {
   "name": "wechat-order-analyzer",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "start": "npx tsx src/server.ts",
     "test": "vitest run"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260602.1",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.8",
-    "wrangler": "^4.86.0"
+    "typescript": "^5.0.0",
+    "vitest": "^4.0.0",
+    "tsx": "^4.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0"
   }
 }

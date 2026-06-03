@@ -1,18 +1,42 @@
 # 微信接单群智能分析
 
-## 部署
+本地运行的微信接单群消息分析工具。通过 iOS 快捷指令接收消息，opencode 本地分析，结果写入飞书多维表格。
 
-1. `npm install`
-2. 配置 secrets:
-   ```bash
-   wrangler secret put WEBHOOK_TOKEN
-   wrangler secret put LLM_API_KEY
-   wrangler secret put FEISHU_APP_ID
-   wrangler secret put FEISHU_APP_SECRET
-   wrangler secret put FEISHU_BITABLE_APP_TOKEN
-   wrangler secret put FEISHU_BITABLE_TABLE_ID
-   ```
-3. `npm run deploy`
+## 架构
+
+```
+iOS 快捷指令 → Cloudflare Tunnel → 本地 HTTP 服务 → opencode 分析 → 飞书多维表格
+```
+
+## 安装
+
+```bash
+npm install
+cp .env.example .env
+# 编辑 .env 填入你的配置
+```
+
+## 运行
+
+```bash
+npm start
+```
+
+## 公网暴露（用 Cloudflare Tunnel）
+
+```bash
+# 安装 cloudflared
+brew install cloudflared
+
+# 快速隧道（临时 URL，每次不同）
+cloudflared tunnel --url http://localhost:3721
+
+# 或固定域名（需要登录 cloudflare）
+cloudflared tunnel login
+cloudflared tunnel create wechat-analyzer
+cloudflared tunnel route dns wechat-analyzer your-subdomain.your-domain.com
+cloudflared tunnel run wechat-analyzer
+```
 
 ## iOS 快捷指令配置
 
@@ -21,10 +45,10 @@
 3. 添加动作：
    - **获取通知的内容**（标题 = 群名，正文 = 消息内容）
    - **获取当前日期** → 格式化为 ISO 8601
-   - **URL**: `https://wechat-order-analyzer.<你的子域>.workers.dev`
+   - **URL**: `你的tunnel地址`
    - **获取 URL 的内容**：
      - 方法: POST
-     - Headers: `X-Webhook-Token: <你的token>`
+     - Headers: `X-Webhook-Token: 你的token`
      - Body (JSON):
        ```json
        {
