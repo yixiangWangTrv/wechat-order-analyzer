@@ -1,6 +1,6 @@
 import http from "node:http";
 import { IncomingMessage as NodeIncomingMessage } from "node:http";
-import { IncomingMessage, Env } from "./types";
+import { IncomingMessage } from "./types";
 import { shouldProcess } from "./filter";
 import { analyzeWithOpencode } from "./opencode-analyzer";
 import { writeToFeishu } from "./feishu";
@@ -54,12 +54,7 @@ const server = http.createServer(async (req, res) => {
 
     const analysis = await analyzeWithOpencode(message.content);
 
-    await writeToFeishu(message, analysis, {
-      appId: process.env.FEISHU_APP_ID || "",
-      appSecret: process.env.FEISHU_APP_SECRET || "",
-      appToken: process.env.FEISHU_BITABLE_APP_TOKEN || "",
-      tableId: process.env.FEISHU_BITABLE_TABLE_ID || "",
-    });
+    await writeToFeishu(message, analysis);
 
     console.log(`[${new Date().toISOString()}] Done: ${analysis.summary}`);
     res.writeHead(200, { "Content-Type": "application/json" });
